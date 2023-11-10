@@ -12,7 +12,7 @@ defineProps({
       <h3 class="text-2xl font-semibold leading-none tracking-tight">{{title}}</h3>
     </div>
     <div class="p-6">
-      <p :class="'text-2xl font-bold ' + fontColor">${{amount}}</p>
+      <p :class="'text-2xl font-bold ' + fontColor">${{amount ?? 0}}</p>
     </div>
   </div>
 </template>
