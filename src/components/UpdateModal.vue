@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {api} from "@/api";
-import {useStore} from "@/store";
+import {useStore} from "@/stores";
+import {useUserStore} from "@/stores/user";
 
 const props = defineProps({
   transaction: Object
 });
 
 const store = useStore();
+const userStore = useUserStore();
 const description = ref(props.transaction?.description);
 const amount = ref(0);
 const type = ref("");
@@ -26,8 +28,8 @@ async function updateTransaction(id: string) {
         }
       }).then(() => {
     store.fetchHistory();
-    store.fetchUser();
     store.fetchAnalyze();
+    userStore.fetchUser();
   })
 }
 </script>

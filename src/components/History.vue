@@ -2,9 +2,11 @@
 import {computed, ref} from "vue";
 import { api } from "@/api";
 import UpdateModal from "@/components/UpdateModal.vue";
-import {useStore} from "@/store";
+import {useStore} from "@/stores";
+import {useUserStore} from "@/stores/user";
 
 const store = useStore();
+const userStore = useUserStore();
 const transactions = computed(() => store.history);
 const selectedTransaction = ref({});
 const isOpen = ref(false);
@@ -16,8 +18,8 @@ async function deleteTransaction(id: string) {
     },
   }).then(() => {
     store.fetchHistory();
-    store.fetchUser();
     store.fetchAnalyze();
+    userStore.fetchUser();
   });
 }
 </script>

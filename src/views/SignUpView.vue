@@ -2,9 +2,9 @@
 import {ref} from "vue";
 import {api} from "@/api";
 import {useRouter} from "vue-router";
-import {useStore} from "@/store";
+import {useUserStore} from "@/stores/user";
 
-const store = useStore();
+const store = useUserStore();
 const router = useRouter();
 
 const name = ref("");

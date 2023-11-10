@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import {useUserStore} from "@/stores/user";
 
-import {useStore} from "@/store";
-
-const store = useStore();
+const store = useUserStore();
 
 function logout() {
   store.token = "";

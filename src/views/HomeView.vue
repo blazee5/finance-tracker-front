@@ -4,12 +4,14 @@ import FinanceBlock from "@/components/ui/FinanceBlock.vue";
 import {computed, onMounted} from "vue";
 import CreateTransaction from "@/components/CreateTransaction.vue";
 import History from "@/components/History.vue";
-import {useStore} from "@/store";
+import {useStore} from "@/stores";
+import {useUserStore} from "@/stores/user";
 
-const store = useStore()
+const store = useStore();
+const userStore = useUserStore();
 
 onMounted(() => {
-  store.fetchUser();
+  userStore.fetchUser();
   store.fetchAnalyze();
   store.fetchHistory();
 });

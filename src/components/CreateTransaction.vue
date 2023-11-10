@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {api} from "@/api";
-import {useStore} from "@/store";
+import {useStore} from "@/stores";
+import {useUserStore} from "@/stores/user";
 
 const store = useStore();
+const userStore = useUserStore();
 const description = ref("");
 const amount = ref(0);
 const type = ref("");
@@ -19,8 +21,8 @@ async function createTransaction() {
     }
   }).then(() => {
     store.fetchHistory();
-    store.fetchUser();
     store.fetchAnalyze();
+    userStore.fetchUser();
   })
 }
 </script>
