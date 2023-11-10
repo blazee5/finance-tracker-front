@@ -17,7 +17,11 @@ async function createTransaction() {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("TOKEN"),
     }
-  }).then(() => store.dispatch("fetchHistory"))
+  }).then(() => {
+    store.dispatch("fetchHistory");
+    store.dispatch("fetchUser");
+    store.dispatch("fetchAnalyze");
+  })
 }
 </script>
 
@@ -74,7 +78,7 @@ async function createTransaction() {
           </div>
         </div>
         <button
-            class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full bg-green-500 text-white"
+            class="inline-flex items-center justify-center rounded-md hover:bg-green-700 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 px-4 py-2 w-full bg-green-600 text-white"
             @click.prevent="createTransaction"
         >
           Создать

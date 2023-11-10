@@ -18,7 +18,6 @@ export interface IUser {
     id: string,
     name: string,
     email: string,
-    balance: number
 }
 
 export const store = createStore<State>({
@@ -57,7 +56,7 @@ export const store = createStore<State>({
         }
     },
     actions: {
-        async fetchBalance() {
+        async fetchUser() {
             await api.get("/api/user", {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("TOKEN")

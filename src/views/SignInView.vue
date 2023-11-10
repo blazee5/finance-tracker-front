@@ -24,7 +24,7 @@ async function signIn() {
 </script>
 
 <template>
-  <div class="mx-auto max-w-md px-6 py-12 bg-white rounded-xl shadow-md space-y-8">
+  <div class="mx-auto max-w-md px-6 pt-12 pb-8 bg-white rounded-xl shadow-md space-y-8">
     <h1 class="text-3xl font-bold text-center">Вход</h1>
     <form class="mt-8 space-y-6">
       <div class="grid grid-cols-1 space-y-4">
@@ -50,12 +50,13 @@ async function signIn() {
         />
       </div>
       <button
-          class="inline-flex items-center justify-center text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 w-full py-2 px-4 bg-green-500 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-md focus:outline-none"
+          class="inline-flex items-center justify-center text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md focus:outline-none"
           @click.prevent="signIn"
       >
         Войти
       </button>
     </form>
+    <p class="flex justify-end gap-1">Нет аккаунта? <RouterLink class="text-green-600 font-bold" to="/signup">Зарегистрироваться</RouterLink></p>
   </div>
 </template>
 

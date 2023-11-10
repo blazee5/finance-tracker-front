@@ -9,7 +9,7 @@ import {useStore} from "vuex";
 const store = useStore()
 
 onMounted(() => {
-  store.dispatch("fetchBalance");
+  store.dispatch("fetchUser");
   store.dispatch("fetchAnalyze");
   store.dispatch("fetchHistory");
 });
@@ -24,7 +24,7 @@ const analyze = computed(() => store.getters.getAnalyze);
     <div class="flex flex-col min-h-screen bg-white">
       <main class="flex-grow p-4 space-y-8">
         <div class="grid gap-4 md:grid-cols-3">
-          <FinanceBlock :title="'Баланс'" :amount="user.balance"/>
+          <FinanceBlock :title="'Баланс'" :amount="analyze.total"/>
           <FinanceBlock :title="'Доходы'" :amount="analyze.total_income" :font-color="'text-green-500'"/>
           <FinanceBlock :title="'Расходы'" :amount="analyze.total_expense" :font-color="'text-red-500'"/>
         </div>
