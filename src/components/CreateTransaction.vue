@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {api} from "@/api";
-import {useStore} from "vuex";
+import {useStore} from "@/store";
 
 const store = useStore();
 const description = ref("");
@@ -18,9 +18,9 @@ async function createTransaction() {
       Authorization: "Bearer " + localStorage.getItem("TOKEN"),
     }
   }).then(() => {
-    store.dispatch("fetchHistory");
-    store.dispatch("fetchUser");
-    store.dispatch("fetchAnalyze");
+    store.fetchHistory();
+    store.fetchUser();
+    store.fetchAnalyze();
   })
 }
 </script>

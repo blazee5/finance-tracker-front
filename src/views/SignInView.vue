@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import {api} from "@/api";
-import {useStore} from "vuex";
 import {useRouter} from "vue-router";
+import {useStore} from "@/store";
 
 const store = useStore();
 const router = useRouter();
@@ -17,7 +17,7 @@ async function signIn() {
   }).then(res => {
     const token = res.data?.token;
     localStorage.setItem("TOKEN", token)
-    store.commit("setToken", token)
+    store.token = token;
     router.push("/");
   })
 }

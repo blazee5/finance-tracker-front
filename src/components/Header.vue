@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {useStore} from "vuex";
+
+import {useStore} from "@/store";
 
 const store = useStore();
 
 function logout() {
-  store.commit("setToken", "");
+  store.token = "";
   localStorage.removeItem("TOKEN");
 }
 </script>
@@ -32,8 +33,8 @@ function logout() {
         <span class="text-2xl font-bold text-gray-900">Finance Tracker</span>
       </div>
     </RouterLink>
-    <div v-if="store.getters.getToken" class="flex gap-3">
-      <p class="inline-flex items-center">{{store.getters.getUser.name}}</p>
+    <div v-if="store.token" class="flex gap-3">
+      <p class="inline-flex items-center">{{store.user.name}}</p>
         <button @click="logout" class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 text-gray-700 border-gray-700">
           Выйти
         </button>

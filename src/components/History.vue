@@ -1,27 +1,33 @@
 <script setup lang="ts">
-import {useStore} from "vuex";
-import {computed} from "vue";
-import {api} from "@/api";
+import {computed, ref} from "vue";
+import { api } from "@/api";
+import UpdateModal from "@/components/UpdateModal.vue";
+import {useStore} from "@/store";
 
 const store = useStore();
-const transactions = computed(() => store.getters.getHistory);
+const transactions = computed(() => store.history);
+const selectedTransaction = ref({});
+const isOpen = ref(false);
 
 async function deleteTransaction(id: string) {
-  await api.delete(`/api/transactions/${id}`,
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("TOKEN"),
-        }
-      }).then(() => {
-    store.dispatch("fetchHistory");
-    store.dispatch("fetchUser");
-    store.dispatch("fetchAnalyze");
-  })
+  await api.delete(`/api/transactions/${id}`, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+    },
+  }).then(() => {
+    store.fetchHistory();
+    store.fetchUser();
+    store.fetchAnalyze();
+  });
 }
 </script>
 
 <template>
   <div class="rounded-lg border bg-card text-card-foreground shadow-sm" data-v0-t="card">
+    <Teleport to="body">
+      <UpdateModal v-if="isOpen" :transaction="selectedTransaction" @closeModal="isOpen = false" />
+    </Teleport>
+
   <div class="flex flex-col space-y-1.5 p-6">
     <h3 class="text-2xl font-semibold leading-none tracking-tight">История</h3>
   </div>
@@ -50,7 +56,7 @@ async function deleteTransaction(id: string) {
           <td class="p-4 align-middle">{{transaction?.description}}</td>
           <td class="p-4 align-middle" :class="[transaction?.type == 'income' ? 'text-green-600' : 'text-red-600']">${{transaction?.amount}}</td>
           <td class="p-4 align-middle flex gap-1">
-            <button class="bg-green-600 px-3 py-2 text-white rounded-lg"><i class="fa-solid fa-pen"></i></button>
+            <button @click="isOpen = true; selectedTransaction = transaction" class="bg-green-600 px-3 py-2 text-white rounded-lg"><i class="fa-solid fa-pen"></i></button>
             <button @click="deleteTransaction(transaction?.id)" class="bg-red-600 px-3 py-2 text-white rounded-lg"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
@@ -61,7 +67,3 @@ async function deleteTransaction(id: string) {
   </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

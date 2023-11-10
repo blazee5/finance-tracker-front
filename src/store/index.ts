@@ -1,60 +1,34 @@
-import {createStore} from "vuex";
 import {api} from "@/api";
+import {defineStore} from "pinia";
 
-export interface State {
-    token: string,
+interface ITransaction {
+    id: string,
     user: IUser,
-    analyze: IAnalyze,
-    history: object[],
+    description: string,
+    amount: number,
+    type: string,
+    created_at: string
 }
 
-export interface IAnalyze {
+interface IAnalyze {
     total_income: number,
     total_expense: number,
     total: number
 }
 
-export interface IUser {
+interface IUser {
     id: string,
     name: string,
     email: string,
 }
 
-export const store = createStore<State>({
-    state: {
-        token: localStorage.getItem("TOKEN") ?? "",
-        user: {},
-        analyze: {},
-        history: {}
-    },
-    mutations: {
-        setToken(state: State, payload: string) {
-            state.token = payload;
-        },
-        setHistory(state: State, payload: object[]) {
-            state.history = payload;
-        },
-        setUser(state: State, payload: IUser) {
-            state.user = payload;
-        },
-        setAnalyze(state: State, payload: IAnalyze) {
-            state.analyze = payload;
-        }
-    },
-    getters: {
-        getToken(state: State) {
-            return state.token;
-        },
-        getHistory(state: State) {
-            return state.history;
-        },
-        getUser(state: State) {
-            return state.user;
-        },
-        getAnalyze(state: State) {
-            return state.analyze;
-        }
-    },
+export const useStore = defineStore('main',  {
+    state: () => ({
+        token: "",
+        user: {} as IUser,
+        analyze: {} as IAnalyze,
+        history: {} as ITransaction[],
+    }),
     actions: {
         async fetchUser() {
             await api.get("/api/user", {
@@ -62,25 +36,27 @@ export const store = createStore<State>({
                     Authorization: "Bearer " + localStorage.getItem("TOKEN")
                 }
             }).then(res => {
-                store.commit("setUser", res.data)
+                this.user = res.data;
             })
         },
+
         async fetchAnalyze() {
             await api.get("api/transactions/analyze", {
                 "headers": {
                     "Authorization": "Bearer " + localStorage.getItem("TOKEN"),
                 }
             }).then(res => {
-                store.commit("setAnalyze", res.data);
+                this.analyze = res.data;
             })
         },
+
         async fetchHistory() {
             await api.get("api/transactions", {
                 "headers": {
                     "Authorization": "Bearer " + localStorage.getItem("TOKEN"),
                 }
             }).then(res => {
-                store.commit("setHistory", res.data)
+                this.history = res.data;
             })
         }
     }
