@@ -11,9 +11,9 @@ const store = useStore();
 const userStore = useUserStore();
 
 onMounted(() => {
-  userStore.fetchUser();
   store.fetchAnalyze();
   store.fetchHistory();
+  userStore.fetchUser();
 });
 
 const analyze = computed(() => store.analyze);

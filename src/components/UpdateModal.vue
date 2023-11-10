@@ -2,34 +2,34 @@
 import {ref} from "vue";
 import {api} from "@/api";
 import {useStore} from "@/stores";
-import {useUserStore} from "@/stores/user";
 
 const props = defineProps({
   transaction: Object
 });
 
+const emits = defineEmits(['closeModal']);
+
 const store = useStore();
-const userStore = useUserStore();
 const description = ref(props.transaction?.description);
-const amount = ref(0);
-const type = ref("");
-const date = ref("");
+const amount = ref(props.transaction?.amount);
+const type = ref(props.transaction?.type);
+const date = ref(props.transaction?.date);
 
 async function updateTransaction(id: string) {
   await api.put(`/api/transactions/${id}`, {
     description: description.value,
     amount: amount.value,
     type: type.value,
-    date: date.value
+    date: new Date(date.value)
       },
       {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("TOKEN"),
         }
       }).then(() => {
+    emits("closeModal");
     store.fetchHistory();
     store.fetchAnalyze();
-    userStore.fetchUser();
   })
 }
 </script>
