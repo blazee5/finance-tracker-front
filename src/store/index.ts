@@ -24,7 +24,7 @@ interface IUser {
 
 export const useStore = defineStore('main',  {
     state: () => ({
-        token: "",
+        token: localStorage.getItem("TOKEN"),
         user: {} as IUser,
         analyze: {} as IAnalyze,
         history: {} as ITransaction[],
