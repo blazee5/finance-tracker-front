@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import {mapGetters, useStore} from "vuex";
+import {useStore} from "vuex";
+import {computed} from "vue";
 
 const store = useStore();
+
+const transactions = computed(() => store.getters.getHistory);
 </script>
 
 <template>
@@ -26,10 +29,10 @@ const store = useStore();
         </tr>
         </thead>
         <tbody class="[&amp;_tr:last-child]:border-0">
-        <tr class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-          <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Nov 9, 2023</td>
-          <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">Salary</td>
-          <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0 text-green-600">$5,000.00</td>
+        <tr v-for="transaction in transactions" :key="transaction?.id" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+          <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{new Date(transaction?.created_at).toLocaleString()}}</td>
+          <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">{{transaction?.description}}</td>
+          <td class="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0" :class="[transaction?.type == 'income' ? 'text-green-600' : 'text-red-600']">${{transaction?.amount}}</td>
         </tr>
         </tbody>
       </table>

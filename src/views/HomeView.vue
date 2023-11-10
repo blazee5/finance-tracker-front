@@ -11,6 +11,7 @@ const store = useStore()
 onMounted(() => {
   store.dispatch("fetchBalance");
   store.dispatch("fetchAnalyze");
+  store.dispatch("fetchHistory");
 });
 
 const user = computed(() => store.getters.getUser);

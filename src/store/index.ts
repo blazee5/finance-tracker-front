@@ -1,6 +1,13 @@
 import {createStore} from "vuex";
 import {api} from "@/api";
 
+export interface State {
+    token: string,
+    user: IUser,
+    analyze: IAnalyze,
+    history: object[],
+}
+
 export interface IAnalyze {
     total_income: number,
     total_expense: number,
@@ -14,13 +21,6 @@ export interface IUser {
     balance: number
 }
 
-export interface State {
-    token: string,
-    user: IUser,
-    analyze: IAnalyze,
-    history: object
-}
-
 export const store = createStore<State>({
     state: {
         token: localStorage.getItem("TOKEN") ?? "",
@@ -32,7 +32,7 @@ export const store = createStore<State>({
         setToken(state: State, payload: string) {
             state.token = payload;
         },
-        setHistory(state: State, payload: object) {
+        setHistory(state: State, payload: object[]) {
             state.history = payload;
         },
         setUser(state: State, payload: IUser) {
@@ -73,6 +73,15 @@ export const store = createStore<State>({
                 }
             }).then(res => {
                 store.commit("setAnalyze", res.data);
+            })
+        },
+        async fetchHistory() {
+            await api.get("api/transactions", {
+                "headers": {
+                    "Authorization": "Bearer " + localStorage.getItem("TOKEN"),
+                }
+            }).then(res => {
+                store.commit("setHistory", res.data)
             })
         }
     }
