@@ -54,7 +54,7 @@ async function deleteTransaction(id: string) {
             <button @click="deleteTransaction(transaction?.id)" class="bg-red-600 px-3 py-2 text-white rounded-lg"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
-          <tr>Тут пока ничего нет...</tr>
+          <tr v-else>Тут пока ничего нет...</tr>
         </tbody>
       </table>
     </div>
