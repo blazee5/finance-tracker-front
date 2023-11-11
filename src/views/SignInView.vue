@@ -3,23 +3,29 @@ import {ref} from "vue";
 import {api} from "@/api";
 import {useRouter} from "vue-router";
 import {useUserStore} from "@/stores/user";
+import {useToast} from "vue-toastification";
 
 const store = useUserStore();
 const router = useRouter();
+const toast = useToast();
 
 const email = ref("");
 const password = ref("");
 
 async function signIn() {
-  await api.post("/auth/signin", {
-    "email": email.value,
-    "password": password.value
-  }).then(res => {
-    const token = res.data?.token;
-    localStorage.setItem("TOKEN", token)
-    store.token = token;
-    router.push("/");
-  })
+  if (!email.value || !password.value) {
+    toast.error("Заполните все поля");
+  } else {
+    await api.post("/auth/signin", {
+      "email": email.value,
+      "password": password.value
+    }).then(res => {
+      const token = res.data?.token;
+      localStorage.setItem("TOKEN", token)
+      store.token = token;
+      router.push("/");
+    }).catch(() => toast.error("Произошла ошибка"));
+  }
 }
 </script>
 

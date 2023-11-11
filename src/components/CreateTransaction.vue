@@ -2,25 +2,32 @@
 import {ref} from "vue";
 import {api} from "@/api";
 import {useStore} from "@/stores";
+import {useToast} from "vue-toastification";
 
 const store = useStore();
+const toast = useToast();
+
 const description = ref("");
 const amount = ref(0);
 const type = ref("");
 
 async function createTransaction() {
-  await api.post("/api/transactions", {
-    description: description.value,
-    amount: amount.value,
-    type: type.value
-  }, {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("TOKEN"),
-    }
-  }).then(() => {
-    store.fetchHistory();
-    store.fetchAnalyze();
-  })
+  if (!description.value || !amount.value || !type.value) {
+    toast.error("Заполните все поля!");
+  } else {
+    await api.post("/api/transactions", {
+      description: description.value,
+      amount: amount.value,
+      type: type.value
+    }, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+      }
+    }).then(() => {
+      store.fetchHistory();
+      store.fetchAnalyze();
+    }).catch(() => toast.error("Произошла ошибка"));
+  }
 }
 </script>
 
