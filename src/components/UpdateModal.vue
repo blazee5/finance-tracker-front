@@ -85,6 +85,22 @@ async function updateTransaction(id: string) {
             v-model="date"
         />
       </div>
+      <div class="space-y-2">
+        <label
+            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            for="type"
+        >
+          Тип
+        </label>
+        <div class="flex gap-2">
+          <input type="radio" value="income" id="type" v-model="type">
+          <label for="type">Доход</label>
+        </div>
+        <div class="flex gap-2">
+          <input type="radio" value="expense" id="type" v-model="type">
+          <label for="type">Расход</label>
+        </div>
+      </div>
     </div>
     <div class="flex justify-end p-6 text-white gap-2">
       <button @click="$emit('closeModal')" class="rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-red-600 text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
