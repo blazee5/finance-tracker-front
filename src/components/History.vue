@@ -7,8 +7,15 @@ import {useStore} from "@/stores";
 const store = useStore();
 const transactions = computed(() => store.history);
 const selectedTransaction = ref({});
+const selectedCategory = ref("");
 const isOpen = ref(false);
+const categories = computed(() => [...new Set(transactions.value.map((e) => e.category))]);
 
+const showTransactions = computed(() => {
+  return selectedCategory.value
+      ? transactions.value.filter((e) => e.category === selectedCategory.value)
+      : transactions.value;
+});
 async function deleteTransaction(id: string) {
   await api.delete(`/api/transactions/${id}`, {
     headers: {
@@ -29,6 +36,13 @@ async function deleteTransaction(id: string) {
 
   <div class="flex flex-col space-y-1.5 p-6">
     <h3 class="text-2xl font-semibold leading-none tracking-tight">История</h3>
+    <div>
+      Категория:
+      <select class="appearance-none bg-white border border-gray-300 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline" v-model="selectedCategory">
+        <option value="" selected>Все</option>
+        <option v-for="category in categories" :key="category">{{ category }}</option>
+      </select>
+    </div>
   </div>
   <div class="p-6">
     <div class="w-full overflow-auto">
@@ -45,15 +59,19 @@ async function deleteTransaction(id: string) {
             Сумма
           </th>
           <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
+            Категория
+          </th>
+          <th class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
             Действие
           </th>
         </tr>
         </thead>
         <tbody class="[&amp;_tr:last-child]:border-0">
-        <tr v-if="transactions" v-for="transaction in transactions" :key="transaction?.id" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+        <tr v-if="transactions" v-for="transaction in showTransactions" :key="transaction?.id" class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
           <td class="p-4 align-middle">{{new Date(transaction?.created_at).toLocaleString()}}</td>
           <td class="p-4 align-middle">{{transaction?.description}}</td>
           <td class="p-4 align-middle" :class="[transaction?.type == 'income' ? 'text-green-600' : 'text-red-600']">${{transaction?.amount}}</td>
+          <td class="p-4 align-middle">{{transaction?.category}}</td>
           <td class="p-4 align-middle flex gap-1">
             <button @click="isOpen = true; selectedTransaction = transaction" class="bg-green-600 px-3 py-2 text-white rounded-lg"><i class="fa-solid fa-pen"></i></button>
             <button @click="deleteTransaction(transaction?.id)" class="bg-red-600 px-3 py-2 text-white rounded-lg"><i class="fa-solid fa-trash"></i></button>

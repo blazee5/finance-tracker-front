@@ -9,6 +9,7 @@ const toast = useToast();
 
 const description = ref("");
 const amount = ref(0);
+const category = ref("");
 const type = ref("");
 
 async function createTransaction() {
@@ -18,6 +19,7 @@ async function createTransaction() {
     await api.post("/api/transactions", {
       description: description.value,
       amount: amount.value,
+      category: category.value,
       type: type.value
     }, {
       headers: {
@@ -55,6 +57,20 @@ async function createTransaction() {
         <div>
           <label
               class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              for="category"
+          >
+            Категория
+          </label>
+          <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="category"
+              placeholder="Введите категорию"
+              v-model="category"
+          />
+        </div>
+        <div>
+          <label
+              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               for="amount"
           >
             Сумма
@@ -75,12 +91,8 @@ async function createTransaction() {
             Тип
           </label>
           <div class="flex gap-2">
-            <input type="radio" value="income" id="type" v-model="type">
-            <label for="type">Доход</label>
-          </div>
-          <div class="flex gap-2">
-            <input type="radio" value="expense" id="type" v-model="type">
-            <label for="type">Расход</label>
+            <button class="border rounded-lg p-2" @click.prevent="type ='income'" :class="{ 'bg-green-500': type === 'income', 'text-white': type === 'income' }">Доход</button>
+            <button class="border rounded-lg p-2" @click.prevent="type = 'expense'" :class="{ 'bg-red-500': type === 'expense', 'text-white': type === 'expense' }">Расход</button>
           </div>
         </div>
         <button

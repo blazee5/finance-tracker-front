@@ -13,6 +13,7 @@ const userStore = useUserStore();
 onMounted(() => {
   store.fetchAnalyze();
   store.fetchHistory();
+  // store.fetchCategories();
   userStore.fetchUser();
 });
 

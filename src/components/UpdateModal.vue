@@ -12,6 +12,7 @@ const emits = defineEmits(['closeModal']);
 const store = useStore();
 const description = ref(props.transaction?.description);
 const amount = ref(props.transaction?.amount);
+const category = ref(props.transaction?.category);
 const type = ref(props.transaction?.type);
 const date = ref(props.transaction?.date);
 
@@ -19,6 +20,7 @@ async function updateTransaction(id: string) {
   await api.put(`/api/transactions/${id}`, {
     description: description.value,
     amount: amount.value,
+    category: category.value,
     type: type.value,
     date: new Date(date.value)
       },
@@ -73,6 +75,20 @@ async function updateTransaction(id: string) {
       <div class="space-y-2">
         <label
             class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            for="category"
+        >
+          Категория
+        </label>
+        <input
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            id="category"
+            placeholder="Введите категорию"
+            v-model="category"
+        />
+      </div>
+      <div class="space-y-2">
+        <label
+            class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             for="date"
         >
           Дата
@@ -93,12 +109,8 @@ async function updateTransaction(id: string) {
           Тип
         </label>
         <div class="flex gap-2">
-          <input type="radio" value="income" id="type" v-model="type">
-          <label for="type">Доход</label>
-        </div>
-        <div class="flex gap-2">
-          <input type="radio" value="expense" id="type" v-model="type">
-          <label for="type">Расход</label>
+          <button class="border rounded-lg p-2" @click="type ='income'" :class="{ 'bg-green-500': type === 'income', 'text-white': type === 'income' }">Доход</button>
+          <button class="border rounded-lg p-2" @click="type = 'expense'" :class="{ 'bg-red-500': type === 'expense', 'text-white': type === 'expense' }">Расход</button>
         </div>
       </div>
     </div>
