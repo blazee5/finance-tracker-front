@@ -4,10 +4,10 @@ import {ref} from "vue";
 import type {IUser} from "@/stores/user";
 
 export interface ITransaction {
-    id: string;
+    id: number;
     user: IUser;
     description: string;
-    category: string;
+    category: ICategory;
     amount: number;
     type: string;
     created_at: string;
@@ -19,10 +19,10 @@ interface IAnalyze {
     total: number;
 }
 
-interface ICategory {
-    id: string;
+export interface ICategory {
+    id: number;
     name: string;
-    user: IUser;
+    user_id: number;
 }
 
 
@@ -30,6 +30,7 @@ export const useStore = defineStore('main', () => {
     const analyze = ref({} as IAnalyze);
     const history = ref([] as ITransaction[]);
     const categories = ref([] as ICategory[]);
+    const selectedCategory = ref({} as ICategory);
 
     async function fetchAnalyze() {
         await api.get("api/transactions/analyze", {
@@ -42,7 +43,7 @@ export const useStore = defineStore('main', () => {
     }
 
     async function fetchHistory() {
-        await api.get("api/transactions", {
+        await api.get(`api/transactions?category=${selectedCategory.value.id ?? 0}`, {
             "headers": {
                 "Authorization": "Bearer " + localStorage.getItem("TOKEN"),
             }
@@ -51,15 +52,15 @@ export const useStore = defineStore('main', () => {
         })
     }
 
-    // async function fetchCategories() {
-    //     await api.get("api/categories", {
-    //         "headers": {
-    //             "Authorization": "Bearer " + localStorage.getItem("TOKEN"),
-    //         }
-    //     }).then(res => {
-    //         categories.value = res.data;
-    //     })
-    // }
+    async function fetchCategories() {
+        await api.get("api/categories", {
+            "headers": {
+                "Authorization": "Bearer " + localStorage.getItem("TOKEN"),
+            }
+        }).then(res => {
+            categories.value = res.data;
+        })
+    }
 
-    return {analyze, history, fetchAnalyze, fetchHistory}
+    return {analyze, history, categories, selectedCategory, fetchAnalyze, fetchHistory, fetchCategories}
 })

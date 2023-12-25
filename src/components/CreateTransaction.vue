@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {api} from "@/api";
-import {useStore} from "@/stores";
+import {type ICategory, useStore} from "@/stores";
 import {useToast} from "vue-toastification";
 
 const store = useStore();
@@ -9,8 +9,9 @@ const toast = useToast();
 
 const description = ref("");
 const amount = ref(0);
-const category = ref("");
+const category = ref({} as ICategory);
 const type = ref("");
+const categories = computed(() => store.categories);
 
 async function createTransaction() {
   if (!description.value || !amount.value || !type.value) {
@@ -19,7 +20,7 @@ async function createTransaction() {
     await api.post("/api/transactions", {
       description: description.value,
       amount: amount.value,
-      category: category.value,
+      category_id: category.value.id,
       type: type.value
     }, {
       headers: {
@@ -54,19 +55,12 @@ async function createTransaction() {
               v-model="description"
           />
         </div>
-        <div>
-          <label
-              class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              for="category"
-          >
-            Категория
-          </label>
-          <input
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              id="category"
-              placeholder="Введите категорию"
-              v-model="category"
-          />
+        <div class="flex flex-col">
+          Категория:
+          <select v-model="category"
+                  class="appearance-none bg-white border border-gray-300 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+            <option :value="category" v-for="category in categories" :key="category.id">{{ category.name }}</option>
+          </select>
         </div>
         <div>
           <label
@@ -91,8 +85,12 @@ async function createTransaction() {
             Тип
           </label>
           <div class="flex gap-2">
-            <button class="border rounded-lg p-2" @click.prevent="type ='income'" :class="{ 'bg-green-500': type === 'income', 'text-white': type === 'income' }">Доход</button>
-            <button class="border rounded-lg p-2" @click.prevent="type = 'expense'" :class="{ 'bg-red-500': type === 'expense', 'text-white': type === 'expense' }">Расход</button>
+            <button class="border rounded-lg p-2" @click.prevent="type ='income'"
+                    :class="{ 'bg-green-500': type === 'income', 'text-white': type === 'income' }">Доход
+            </button>
+            <button class="border rounded-lg p-2" @click.prevent="type = 'expense'"
+                    :class="{ 'bg-red-500': type === 'expense', 'text-white': type === 'expense' }">Расход
+            </button>
           </div>
         </div>
         <button

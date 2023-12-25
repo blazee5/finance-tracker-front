@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {api} from "@/api";
 import {useStore} from "@/stores";
 
@@ -13,14 +13,15 @@ const store = useStore();
 const description = ref(props.transaction?.description);
 const amount = ref(props.transaction?.amount);
 const category = ref(props.transaction?.category);
+const categories = computed(() => store.categories);
 const type = ref(props.transaction?.type);
-const date = ref(props.transaction?.date);
+const date = ref(props.transaction?.Created_at);
 
-async function updateTransaction(id: string) {
+async function updateTransaction(id: number) {
   await api.put(`/api/transactions/${id}`, {
     description: description.value,
     amount: amount.value,
-    category: category.value,
+    category_id: category.value.id,
     type: type.value,
     date: new Date(date.value)
       },
@@ -72,19 +73,16 @@ async function updateTransaction(id: string) {
             v-model="amount"
         />
       </div>
-      <div class="space-y-2">
+      <div class="space-y-2 flex flex-col">
         <label
             class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             for="category"
         >
           Категория
         </label>
-        <input
-            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            id="category"
-            placeholder="Введите категорию"
-            v-model="category"
-        />
+        <select v-model="category" class="appearance-none bg-white border border-gray-300 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+          <option :value="category" v-for="category in categories" :key="category.id">{{ category.name }}</option>
+        </select>
       </div>
       <div class="space-y-2">
         <label
